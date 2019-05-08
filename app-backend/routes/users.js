@@ -16,22 +16,15 @@ client.connect().then(_ => {
   console.log("Could not connect to the database!")
   console.log(err)
 });
+let result = "Nothing found!"
 client.query('SELECT * FROM users', (err, res) => {
-  err === null ? console.log(res) : console.log(err)
+  err === null ? result = res.rows : console.log(err)
   client.end();
 })
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
-  res.json([{
-      id: 1,
-      name: "test1"
-    },
-    {
-      id: 2,
-      name: "test2"
-    },
-  ])
+  res.json(result.map(user => user));
 });
 
 module.exports = router;
