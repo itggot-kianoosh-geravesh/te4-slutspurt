@@ -1,30 +1,28 @@
 var express = require('express');
 var router = express.Router();
 const {
-  Pool,
   Client
 } = require('pg')
-const connectionString = 'postgressql://localhost:5432/xsidb'
-
 const client = new Client({
-  connectionString: connectionString,
+  connectionString: 'postgressql://localhost:5432/xsidb',
 })
 
-client.connect().then(_ => {
-  console.log("Connected to database!");
-}).catch(err => {
-  console.log("Could not connect to the database!")
-  console.log(err)
-});
-let result = "Nothing found!"
-client.query('SELECT * FROM posts', (err, res) => {
-  err === null ? result = res.rows : console.log(err)
-  client.end();
-})
+client.connect()
 
-/* GET posts listing. */
+
+/* GET posts. */
 router.get('/', function (req, res, next) {
-  res.json(result.map(post => post));
+  client.query('SELECT * FROM posts', (error, results) => {
+    error ? console.log(error) : res.json(results.rows.map(post => post));
+  })
 });
+
+/* POST posts */
+router.post('/new', function (req, res, next) {
+  client.query(`INSERT INTO posts (msg) VALUES ('${req.body.msg}')`, (error, results) => {
+    error === null ? res.send(JSON.stringify(results)) : console.group(error)
+  })
+})
+
 
 module.exports = router;

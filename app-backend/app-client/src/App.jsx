@@ -16,7 +16,27 @@ class App extends Component {
     this.setState({ msg: event.target.value });
   }
   handleSubmit() {
-    console.log(this.state.msg);
+    let data = {
+      msg: this.state.msg
+    };
+    fetch("/posts/new", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    })
+      .then(response => {
+        if (response.status >= 400) {
+          throw new Error("Bad response from server");
+        }
+        return response.json();
+      })
+      .catch(err => console.log(err))
+      .then(data => {
+        if (data === "success") {
+          console.log("Submited succesfully!");
+        }
+      });
+    window.location.reload();
   }
   render() {
     let { posts } = this.state;
