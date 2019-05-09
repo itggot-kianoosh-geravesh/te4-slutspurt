@@ -28,15 +28,26 @@ class App extends Component {
         if (response.status >= 400) {
           throw new Error("Bad response from server");
         }
-        return response.json();
+        window.location.reload();
       })
-      .catch(err => console.log(err))
-      .then(data => {
-        if (data === "success") {
-          console.log("Submited succesfully!");
+      .catch(err => console.log(err));
+  }
+  handleRemove(id) {
+    let data = {
+      id: id
+    };
+    fetch("/posts/remove", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    })
+      .then(response => {
+        if (response.status >= 400) {
+          throw new Error("Bad response from server");
         }
-      });
-    window.location.reload();
+        window.location.reload();
+      })
+      .catch(err => console.log(err));
   }
   render() {
     let { posts } = this.state;
@@ -44,9 +55,21 @@ class App extends Component {
     return (
       <div className="App">
         <h1>POSTS</h1>
-        <ul>
+        <ul style={{ listStyle: "none" }}>
           {posts.map(post => (
-            <li key={post.id}>{post.msg}</li>
+            <li
+              style={{
+                margin: "20px auto",
+                width: "50vw",
+                height: "25px",
+                border: "1px solid black",
+                cursor: "pointer"
+              }}
+              key={post.id}
+              onClick={() => this.handleRemove(post.id)}
+            >
+              {post.msg}
+            </li>
           ))}
         </ul>
         <input
