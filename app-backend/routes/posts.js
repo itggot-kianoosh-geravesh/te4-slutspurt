@@ -17,14 +17,14 @@ client.connect().then(_ => {
   console.log(err)
 });
 let result = "Nothing found!"
-client.query('SELECT * FROM users', (err, res) => {
+client.query('SELECT * FROM posts', (err, res) => {
   err === null ? result = res.rows : console.log(err)
   client.end();
 })
 
-/* GET users listing. */
+/* GET posts listing. */
 router.get('/', function (req, res, next) {
-  res.json(result.map(user => user));
+  res.json(result.map(post => post));
 });
 
 module.exports = router;

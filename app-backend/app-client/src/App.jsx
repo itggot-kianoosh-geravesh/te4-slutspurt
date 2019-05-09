@@ -3,24 +3,42 @@ import "./App.css";
 
 class App extends Component {
   state = {
-    users: []
+    posts: [],
+    msg: ""
   };
   componentDidMount() {
-    fetch("/users")
+    fetch("/posts")
       .then(res => res.json())
       .catch(err => console.log(err))
-      .then(users => this.setState({ users }));
+      .then(posts => this.setState({ posts }));
+  }
+  handleChange(event) {
+    this.setState({ msg: event.target.value });
+  }
+  handleSubmit() {
+    console.log(this.state.msg);
   }
   render() {
-    let { users } = this.state;
+    let { posts } = this.state;
+    let { msg } = this.state;
     return (
       <div className="App">
-        <h1>USERS</h1>
+        <h1>POSTS</h1>
         <ul>
-          {users.map(user => (
-            <li key={user.id}>{user.name}</li>
+          {posts.map(post => (
+            <li key={post.id}>{post.msg}</li>
           ))}
         </ul>
+        <input
+          type="text"
+          value={msg}
+          onChange={this.handleChange.bind(this)}
+        />
+        <input
+          type="submit"
+          value="Submit"
+          onClick={this.handleSubmit.bind(this)}
+        />
       </div>
     );
   }
